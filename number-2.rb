@@ -6,7 +6,11 @@
 ###
 
 def assert(a, b)
-	return a == b 
+	if a != b 
+		throw
+	else
+		true
+	end
 end
 
 class Branch
@@ -111,3 +115,56 @@ p assert(root.right.right, 115)
 ###
 # 2. Then perform a walk of depth first search on the model so we get result like this: 21, 56, 62, 67, 78, 81, 97, 115
 ###
+
+class TreeSorted < Tree
+	attr_accessor :sorted
+
+	def initialize(value)
+		super(value)
+		@sorted = []
+	end
+
+	def get_sorted
+		sort(@root)
+	end
+
+	private
+
+	def sort(branch)
+		if (branch.left)
+			sort(branch.left)
+		end		
+		
+		@sorted << branch.value	
+		
+		if (branch.right)
+			sort(branch.right)	
+		end
+		
+		@sorted
+	end
+end
+
+# Test
+
+t = TreeSorted.new(78)
+root = t.root
+
+t.add(56)
+t.add(97)
+t.add(21)
+t.add(67)
+t.add(62)
+t.add(81)
+t.add(115)
+
+sorted = t.get_sorted
+
+p assert(sorted[0], 21)
+p assert(sorted[1], 56)
+p assert(sorted[2], 62)
+p assert(sorted[3], 67)
+p assert(sorted[4], 78)
+p assert(sorted[5], 81)
+p assert(sorted[6], 97)
+p assert(sorted[7], 115)
