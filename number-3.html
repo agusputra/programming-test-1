@@ -39,7 +39,7 @@
         event.preventDefault()
         const errors = []
 
-        // Calidate First Name, Last Name and Email
+        // Validate First Name, Last Name and Email
         if (!this.state.firstName) errors.push({ key: 0, message: 'First Name Required' })
         if (!this.state.lastName) errors.push({ key: 1, message: 'Last Name Required' })
         if (!this.state.email) errors.push({ key: 2, message: 'Email Required' })
@@ -79,32 +79,26 @@
             {status}
             <div className="form-group">
               <label>First Name</label>
-              <br />
               <input className="form-control" name="firstName" onChange={this.handleInputChange} value={this.state.firstName} />
             </div>
             <div className="form-group">
               <label>Last Name</label>
-              <br />
               <input className="form-control" name="lastName" onChange={this.handleInputChange} value={this.state.lastName} />
             </div>
             <div className="form-group">
               <label>Email</label>
-              <br />
               <input className="form-control" name="email" onChange={this.handleInputChange} value={this.state.email} />
             </div>
             <div className="form-group">
               <label>Birth Date</label>
-              <br />
               <input className="form-control" type="datetime-local" name="birthDate" onChange={this.handleInputChange} value={this.state.birthDate} />
             </div>
             <div className="form-group">
               <label>Preferred Job Title</label>
-              <br />
               <input className="form-control" name="jobTitle" onChange={this.handleInputChange} value={this.state.jobTitle} />
             </div>
             <div className="form-group">
               <label>Number of Years Experience</label>
-              <br />
               <input className="form-control" type="number" name="experienceYears" onChange={this.handleInputChange} value={this.state.experienceYears} />
             </div>
             <div className="form-group">
