@@ -5,22 +5,29 @@
 .month {
   display: inline-block;
   text-align: center;
-  width: 350px
+  width: 700px
 }
 
-.day {
-  width: 50px;
-  height: 50px;
+.date {
+  width: 100px;
+  padding: 15px 0;
   background: white;
   border: 1px solid deepskyblue;
 }
 
-.day.title {
+.date.title {
   border: none;
   font-weight: bold
 }
 
-.day-zero {
-  color: transparent;
-  background: rgba(0, 0, 0, .3)
+.date.prev-month,
+.date.next-month {
+  color: white;
+  background: rgba(0, 0, 0, .5)
+}
+
+.date.booked {
+  background: deeppink;
+  color: white;
+  font-weight: bold;
 }

@@ -22,56 +22,103 @@ The calendar table should update automatically to show these bookings.
   <script defer src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
   <script defer src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
 </head>
 
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-    class Calendar extends React.Component {
-      constructor(props) {
-        super(props)
-        this.state = {
-          calendar: createCalendar()
-        }
+    function CalendarDate(props) {
+      const { date, now } = props
+      let className = date.booked ? 'booked' : '';
+
+      if (date.month() < now.month()) {
+        return (<button
+          disabled={true}
+          className={`${className} date prev-month`}
+          onClick={props.onClick}>
+          {date.date()}
+        </button>)
       }
 
-      changeMonth(value) {
-        this.setState({ calendar: createCalendar(this.state.calendar.now.add(value, 'months')) })
+      if (date.month() > now.month()) {
+        return (<button
+          disabled={true}
+          className={`${className} date next-month`}
+          onClick={props.onClick}>
+          {date.date()}
+        </button>)
       }
 
-      render() {
-        return (
-          <div className="calendar">
-            <div className="month">
-              <h3 className="d-flex justify-content-between">
-                <button className="btn btn-secondary mr-1" onClick={() => this.changeMonth(-1)}>&lt;</button>
-                {this.state.calendar.now.format('MMMM YYYY').toUpperCase()}
-                <button className="btn btn-secondary ml-1" onClick={() => this.changeMonth(1)}>&gt;</button>
-              </h3>
-              {
-                ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'].map(day => <button className="day title">{day}</button>)
-              }
-              {
-                this.state.calendar.map(week =>
-                  <div>
-                    {week.map(day => <button className={day === 0 ? 'day day-zero' : 'day'}>{day}</button>)}
-                  </div>
-                )
-              }
-            </div>
+      return (<button
+        disabled={date.booked}
+        className={`${className} date ${date.booked ? 'booked' : ''}`}
+        onClick={props.onClick}>
+        {date.date()}
+      </button>)
+    }
+
+    function Calendar(props) {
+      return (
+        <div className="calendar">
+          <div className="month">
+            <h3 className="d-flex justify-content-between">
+              <button className="btn btn-secondary mr-1" onClick={() => props.onChangeMonth(-1)}>&lt;</button>
+              {props.calendar.now.format('MMMM YYYY').toUpperCase()}
+              <button className="btn btn-secondary ml-1" onClick={() => props.onChangeMonth(1)}>&gt;</button>
+            </h3>
+            {
+              ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'].map(date => <button className="date title">{date}</button>)
+            }
+            {
+              props.calendar.map(week =>
+                <div>
+                  {week.map(date => <CalendarDate date={date} now={props.calendar.now} onClick={() => props.onBooking(date)} />)}
+                </div>
+              )
+            }
+            <button className="btn btn-primary mt-5" onClick={() => props.onGenerateBookings()}>Generate Several Booking</button>
           </div>
-        )
-      }
+        </div>
+      )
     }
 
     class App extends React.Component {
+      constructor(props) {
+        super(props)
+        this.cache = []
+        this.state = {
+          calendar: createCalendar(null, this.cache)
+        }
+
+        this.changeMonth = this.changeMonth.bind(this)
+        this.booking = this.booking.bind(this)
+        this.generateBookings = this.generateBookings.bind(this)
+      }
+
+      changeMonth(value) {
+        this.setState({ calendar: createCalendar(this.state.calendar.now.add(value, 'months'), this.cache) })
+      }
+
+      booking(date) {
+        this.setState({ calendar: booking(date) })
+      }
+
+      generateBookings() {
+        this.setState({ calendar: createCalendar(this.state.calendar.now, this.cache, true) })
+      }
+
       render() {
         return (
-          <div className="container mt-5">
+          <div className="container my-5">
             <div className="row">
               <div className="col-12 col-md-8 offset-md-2 p-0">
-                <Calendar />
+                <Calendar
+                  calendar={this.state.calendar}
+                  onChangeMonth={this.changeMonth}
+                  onBooking={this.booking}
+                  onGenerateBookings={this.generateBookings} />
               </div>
             </div>
           </div>
@@ -79,31 +126,84 @@ The calendar table should update automatically to show these bookings.
       }
     }
 
-    function createCalendar(currentMoment) {
-      const now = currentMoment ? currentMoment : moment()
+    function booking(date) {
+      date.booked = true;
+      let c = _.cloneDeep(date.calendar)
+      return Object.assign(c, {
+        now: _.clone(date.calendar.now),
+        first: _.clone(date.calendar.first),
+        last: _.clone(date.calendar.last),
+      })
+    }
+
+    function createCalendar(now, cache, generateBookings) {
+      if (now == null) {
+        now = moment()
+      }
+
+      let cached
+
+      if (cache) {
+        for (let item of cache) {
+          if (item.year === now.year() && item.month === now.month()) {
+            cached = item
+          }
+        }
+      }
+
       const first = now.clone().startOf('month')
       const last = now.clone().endOf('month')
       const weeksCount = Math.ceil((first.day() + last.date()) / 7)
-      const calendar = Object.assign([], { now, first, last, weeksCount })
+      const calendar = Object.assign([], { now, first, last })
+      const randomNumbers = random(1, 28)
+
+      if (cached) {
+        if (generateBookings) {
+          for (let week of cached) {
+            for (let date of week) {
+              if (date.month() !== now.month()) {
+                continue
+              }
+              date.booked = false;
+              if (randomNumbers.includes(date.date())) {
+                date.booked = true
+              }
+            }
+          }
+        }
+        return cached
+      } else {
+        cache.push(calendar)
+      }
 
       for (let weekNumber = 0; weekNumber < weeksCount; weekNumber++) {
         const week = []
         calendar.push(week)
+        calendar.year = now.year()
+        calendar.month = now.month()
+
         for (let day = 7 * weekNumber; day < (7 * (weekNumber + 1)); day++) {
-          if (weekNumber === 0 && day < first.day()) {
-            week.push(0)
+          const date = now.clone().set('date', day + 1 - first.day())
+          date.calendar = calendar
+          if (generateBookings) {
+            if (randomNumbers.includes(date.date())) {
+              date.booked = true
+            }
           }
-          else if (weekNumber === weeksCount - 1 && day > (last.date() + first.day() - 1)) {
-            week.push(0)
-          }
-          else {
-            week.push(day + 1 - first.day())
-          }
+          week.push(date)
         }
       }
 
       return calendar
     }
+
+    function random(min, max) {
+      const random = []
+      for (let i = 0; i < 7; i++) {
+        random.push(Math.ceil(Math.random() * (max - min) + min))
+      }
+      return random
+    }    
 
     ReactDOM.render(
       <App />,
