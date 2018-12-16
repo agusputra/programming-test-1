@@ -16,5 +16,5 @@ This repo contains answers to the following questions:
 5. Ruby question; Show how to can retrieve attribute/field of a variable where the variable could be null OR the field could be null.
 
 Demo:
-- https://agusputra.github.io/test/number-3.html
-- https://agusputra.github.io/test/number-4.html
+- https://agusputra.github.io/programming-test-1/number-3.html
+- https://agusputra.github.io/programming-test-1/number-4.html
