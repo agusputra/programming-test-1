@@ -1,7 +1,7 @@
 
-# What
+# What is this repo?
 
-This repo contains answers to the following questions:
+This repo contains answers to the following programming questions:
 
 1. Given an array `[1, 4, 5, 7, 12, 19, 45, 101]`, write a function that returns array that satisfies this condition: `x*2 - (5 - x) == even number`
 2. Write ruby code that model the following left child is always less than the parent & right child is always bigger than the parent. A parent can only have 2 immediate child node. 
@@ -23,6 +23,7 @@ This repo contains answers to the following questions:
 - https://agusputra.github.io/programming-test-1/number-4.html
 
 # Screenshot
+## Number 4
 ![calendar](calendar.png)
-Number 4
+
 
