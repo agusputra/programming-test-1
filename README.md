@@ -1,3 +1,6 @@
+
+# What
+
 This repo contains answers to the following questions:
 
 1. Given an array `[1, 4, 5, 7, 12, 19, 45, 101]`, write a function that returns array that satisfies this condition: `x*2 - (5 - x) == even number`
@@ -15,6 +18,11 @@ This repo contains answers to the following questions:
    - The calendar table should update automatically to show these bookings.  
 5. Ruby question; Show how to can retrieve attribute/field of a variable where the variable could be null OR the field could be null.
 
-Demo:
+# Demo
 - https://agusputra.github.io/programming-test-1/number-3.html
 - https://agusputra.github.io/programming-test-1/number-4.html
+
+# Screenshot
+![calendar](calendar.png)
+Number 4
+
