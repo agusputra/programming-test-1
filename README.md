@@ -1,6 +1,6 @@
 
 # What is this repo?
-
+This repo is the solution of programming test that I've done
 This repo contains answers to the following programming questions:
 
 ## No. 1
